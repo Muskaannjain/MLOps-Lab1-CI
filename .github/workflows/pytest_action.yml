@@ -1,0 +1,44 @@
+name: Testing with Pytest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests and generate XML report
+        run: pytest test/test_pytest.py -v --junitxml=pytest-report-${{ matrix.python-version }}.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.python-version }}
+          path: pytest-report-${{ matrix.python-version }}.xml
+
+      - name: Notify on success
+        if: success()
+        run: echo "Tests passed successfully"
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "Tests failed"
