@@ -1,6 +1,7 @@
 # Lab 1 – CI with GitHub Actions
 
 MLOps (IE-7374), Northeastern University
+
 Based on Github_Labs/Lab1 from https://github.com/raminmohammadi/MLOps
 
 ## What I Learned From This Lab
